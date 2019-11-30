@@ -39,6 +39,7 @@
 #include "clock_config.h"
 #include "MKL25Z4.h"
 #include "fsl_debug_console.h"
+#include "dac.h"
 
 
 /* F R E E   R T O S   I N C L U D E S */
@@ -65,6 +66,8 @@ int main(void) {
     BOARD_InitBootPeripherals();
   	/* Init FSL debug console. */
     BOARD_InitDebugConsole();
+
+    DacSetLT();
 
     xTaskCreate(hello_task, "Hello_task", configMINIMAL_STACK_SIZE + 10, NULL, hello_task_PRIORITY, NULL);
     vTaskStartScheduler();
