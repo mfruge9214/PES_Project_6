@@ -13,6 +13,14 @@
 static uint16_t DAC_REG_VALS[NUM_SIN_VALS];		// Not const because values are calculated through code
 static uint8_t dac_LT_idx;
 
+
+/* T A S K S */
+
+void prv_GenerateSineWave(void *prvParameters)
+{
+
+}
+
 /*
  * @brief	Sets the DAC register values in the lookup table
  *

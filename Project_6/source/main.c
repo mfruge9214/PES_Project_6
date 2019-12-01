@@ -43,6 +43,7 @@
 #include "logger.h"
 #include "gpio.h"
 #include "Systick.h"
+#include "myTimer.h"
 
 
 /* F R E E   R T O S   I N C L U D E S */
@@ -54,7 +55,7 @@
 /* D E F I N I T I O N S */
 
 /* Task priorities. */
-#define hello_task_PRIORITY (configMAX_PRIORITIES - 1)
+#define genwave_PRIORITY (configMAX_PRIORITIES - 1)
 
 static void hello_task(void *pvParameters);
 
@@ -73,12 +74,19 @@ int main(void) {
     /* Initialize application modules */
     logInit(LL_Debug);
     gpioInit();
-    SystickInit();
+//    SystickInit();
 
-    xTaskCreate(hello_task, "Hello_task", configMINIMAL_STACK_SIZE + 10, NULL, hello_task_PRIORITY, NULL);
+    /* Create Timers */
+    myTimerCreate();
+
+    /* Timer will not start until scheduler is started */
+    myTimerStart();
+
+    /* Create Tasks */
+//    xTaskCreate(prv_GenerateSineWave, "Generate_Sine_Wave", configMINIMAL_STACK_SIZE + 10, NULL, genwave_PRIORITY, NULL);
+//    xTaskCreate(hello_task, "Hello_task", configMINIMAL_STACK_SIZE + 10, NULL, hello_task_PRIORITY, NULL);
     vTaskStartScheduler();
-    for (;;)
-        ;
+    while(1);
 }
 
 

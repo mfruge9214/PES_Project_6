@@ -34,7 +34,7 @@ void SystickInit(void)
     NVIC_EnableIRQ(SysTick_IRQn);
 }
 
-/* Commented out because freeRTOS has a systick handler and linker throws errors
+/* Commented out because freeRTOS has a systick handler and linker throws errors */
 //void SysTick_Handler(void)
 //{
 //	START_CRITICAL();
