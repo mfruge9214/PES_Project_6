@@ -40,6 +40,9 @@
 #include "MKL25Z4.h"
 #include "fsl_debug_console.h"
 #include "dac.h"
+#include "logger.h"
+#include "gpio.h"
+#include "Systick.h"
 
 
 /* F R E E   R T O S   I N C L U D E S */
@@ -67,7 +70,10 @@ int main(void) {
   	/* Init FSL debug console. */
     BOARD_InitDebugConsole();
 
-    DacSetLT();
+    /* Initialize application modules */
+    logInit(LL_Debug);
+    gpioInit();
+    SystickInit();
 
     xTaskCreate(hello_task, "Hello_task", configMINIMAL_STACK_SIZE + 10, NULL, hello_task_PRIORITY, NULL);
     vTaskStartScheduler();

@@ -15,6 +15,13 @@
 
 /* Structs and Enums */
 
+typedef enum{
+	DAC_SUCCESS,
+	DAC_FAIL
+}dac_ret_t;
 
 /* Function Prototypes */
 void DacSetLT(void);
+dac_ret_t DacInit(void);
+dac_ret_t DacSetVoltage(uint16_t regVal);
+dac_ret_t DacIncrementAndSet(void);
