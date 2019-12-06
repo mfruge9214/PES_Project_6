@@ -65,11 +65,13 @@ dac_ret_t DacInit(void)
 
 	// Route clocks to peripheral and GPIO ports
 
-//	SIM->SCGC5 |= SIM_SCGC5_PORTE_MASK;			Done in clk config?
+	SIM->SCGC6 |= SIM_SCGC6_DAC0_MASK;
+	SIM->SCGC5 |= SIM_SCGC5_PORTE_MASK;			//Done in clk config?
 	// Route pins
 //	Done in Pin Mux
 	// Configure peripheral registers
 
+	DAC0->C0 &= ~(DAC_C0_DACRFS_MASK | DAC_C0_LPEN_MASK);
 //	DAC0->C0 |= (DAC_C0_DACRFS_MASK);	// When enabled, this line selects Vref2 as the reference voltage
 
 	/* This section applies when we go to do DMA

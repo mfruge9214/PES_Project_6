@@ -19,7 +19,7 @@ static bool lightOn;
 void myTimerCreate(TimerHandle_t * ptTimer){
 	lightOn = false;
 	TickType_t timerPeriod = pdMS_TO_TICKS(100);
-	*ptTimer = xTimerCreate(".1s timer",
+	(*ptTimer) = xTimerCreate(".1s timer",
 							timerPeriod,
 							pdTRUE,
 							(void *) 2,
