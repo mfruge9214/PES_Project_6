@@ -4,7 +4,7 @@
  */
 
 /* Includes */
-
+#include "app.h"
 
 /* Defines */
 
@@ -12,8 +12,6 @@
 #define PI				3.141592653589793
 #define STEP			.1256637
 #define VREF			3.300
-
-/* Structs and Enums */
 
 typedef enum{
 	DAC_SUCCESS,

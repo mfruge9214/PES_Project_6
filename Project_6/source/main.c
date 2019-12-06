@@ -74,16 +74,9 @@ int main(void) {
     /* Initialize application modules */
     logInit(LL_Debug);
     gpioInit();
-//    SystickInit();
-
-    /* Create Timers */
-    myTimerCreate();
-
-    /* Timer will not start until scheduler is started */
-    myTimerStart();
 
     /* Create Tasks */
-//    xTaskCreate(prv_GenerateSineWave, "Generate_Sine_Wave", configMINIMAL_STACK_SIZE + 10, NULL, genwave_PRIORITY, NULL);
+    xTaskCreate(prv_GenerateSineWave, "Generate_Sine_Wave", configMINIMAL_STACK_SIZE + 10, NULL, genwave_PRIORITY, NULL);
 //    xTaskCreate(hello_task, "Hello_task", configMINIMAL_STACK_SIZE + 10, NULL, hello_task_PRIORITY, NULL);
     vTaskStartScheduler();
     while(1);

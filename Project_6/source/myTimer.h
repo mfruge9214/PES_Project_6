@@ -6,9 +6,6 @@
 #include "FreeRTOS.h"
 #include "timers.h"
 
-
-extern TimerHandle_t myTimer;
-
-void myTimerCreate(void);
-void myTimerStart(void);
+void myTimerCreate(TimerHandle_t * ptTimer);
+void myTimerStart(TimerHandle_t * ptTimer);
 void myTimerCallback( TimerHandle_t timer);

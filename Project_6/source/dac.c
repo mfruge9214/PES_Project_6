@@ -9,17 +9,12 @@
 #include "dac.h"
 #include "logger.h"
 #include "gpio.h"
+#include <stdio.h>
 
 static uint16_t DAC_REG_VALS[NUM_SIN_VALS];		// Not const because values are calculated through code
 static uint8_t dac_LT_idx;
 
-
-/* T A S K S */
-
-void prv_GenerateSineWave(void *prvParameters)
-{
-
-}
+/* F U N C T I O N S */
 
 /*
  * @brief	Sets the DAC register values in the lookup table
@@ -137,6 +132,7 @@ dac_ret_t DacIncrementAndSet()
 	// Chect to ensure index is within bounds
 	if(dac_LT_idx < 0 || dac_LT_idx >= NUM_SIN_VALS)
 	{
+		// TODO: Adapt to error checking
 		gpioRedLEDOn();
 		return DAC_FAIL;
 	}
