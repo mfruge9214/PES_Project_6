@@ -5,6 +5,7 @@
 
 #include "myTimer.h"
 #include "gpio.h"
+#include "adc.h"
 #include <stdbool.h>
 
 
@@ -44,5 +45,5 @@ void myTimerCallback( TimerHandle_t timer)
 		gpioLEDsOff();
 		lightOn = false;
 	}
-
+	adcBeginConversion();
 }

@@ -41,7 +41,7 @@ CircularBuffer_t* CircBufCreate(void)
 CircBufferReturn_t CircBufInit(CircularBuffer_t * buf, uint8_t size)
 {
 	/* Allocate requested memory */
-	buf->buffer_start = (char*) malloc(sizeof(char) * size);
+	buf->buffer_start = (uint16_t*) malloc(sizeof(uint16_t) * size);
 
 	/* Make sure memory is valid */
 	if(!buf->buffer_start)
@@ -86,7 +86,7 @@ CircBufferReturn_t CircBufRealloc(CircularBuffer_t * buf)
 	logString(LL_Debug, FN_CircBufRealloc, "Reallocating Buffer\0");
 
 	CircularBuffer_t * temp = CircBufCreate();
-	temp->buffer_start = (char*) realloc(buf->buffer_start, buf->capacity * BUFSIZE_MULT);
+	temp->buffer_start = (uint16_t *) realloc(buf->buffer_start, buf->capacity * BUFSIZE_MULT);
 
 	temp->capacity = buf->capacity * BUFSIZE_MULT;
 	temp->head = temp->buffer_start;
@@ -100,10 +100,10 @@ CircBufferReturn_t CircBufRealloc(CircularBuffer_t * buf)
 	/* Adjust values to reflect change */
 
 	/* Create holding values */
-	char* old_bufend;
-	char cTransfer;
+	uint16_t * old_bufend;
+	uint16_t cTransfer;
 
-	old_bufend = (char*) buf->buffer_start + (sizeof(char) * buf->capacity);
+	old_bufend = (uint16_t *) buf->buffer_start + (sizeof(uint16_t) * buf->capacity);
 
 	/* Set new values */
 
@@ -148,7 +148,7 @@ CircBufferReturn_t CircBufRealloc(CircularBuffer_t * buf)
  * 					BUF_SUCCESS		Operation Successful
  * 					BUF_FULL		Buffer is full
  *************************/
-CircBufferReturn_t	CircBufAdd(CircularBuffer_t * buf, char c)
+CircBufferReturn_t	CircBufAdd(CircularBuffer_t * buf, uint16_t c)
 {
 	CircBufferReturn_t ret;
 
@@ -174,7 +174,9 @@ CircBufferReturn_t	CircBufAdd(CircularBuffer_t * buf, char c)
 	(buf->length)++;
 
 
-	char* bufend = (char*) buf->buffer_start + (sizeof(char) * buf->capacity);
+//	uint16_t offset = (sizeof(uint16_t) * buf->capacity);
+	uint16_t offset = (buf->capacity);
+	uint16_t * bufend = (uint16_t *) (buf->buffer_start + offset);
 
 	/* Check if it needs to be wrapped to the beginning */
 	if(buf->head == bufend)
@@ -202,7 +204,7 @@ CircBufferReturn_t	CircBufAdd(CircularBuffer_t * buf, char c)
  * 					BUF_SUCCESS		Operation Successful
  * 					BUF_EMPTY		Buffer is empty
  *************************/
-CircBufferReturn_t	CircBufRemove(CircularBuffer_t * buf, char * charOut)
+CircBufferReturn_t	CircBufRemove(CircularBuffer_t * buf, uint16_t * charOut)
 {
 	if(CircBufIsEmpty(buf) == BUF_EMPTY)
 	{
@@ -217,7 +219,7 @@ CircBufferReturn_t	CircBufRemove(CircularBuffer_t * buf, char * charOut)
 	(buf->tail)++;
 	(buf->length)--;
 
-	char* bufend = (char*) buf->buffer_start + (sizeof(char) * buf->capacity);
+	uint16_t * bufend = (uint16_t *) buf->buffer_start + (sizeof(uint16_t) * buf->capacity);
 
 	/* Check if it needs to be wrapped to the beginning */
 	if(buf->tail == bufend)
@@ -246,7 +248,7 @@ CircBufferReturn_t	CircBufRemove(CircularBuffer_t * buf, char * charOut)
  *************************/
 CircBufferReturn_t	CircBufIsFull(CircularBuffer_t * buf)
 {
-	if((buf->capacity == buf->length) && (buf->head == buf->tail))
+	if((buf->length >= buf->capacity) && (buf->head == buf->tail))
 	{
 		return BUF_FULL;
 	}

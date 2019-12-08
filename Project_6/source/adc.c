@@ -6,6 +6,12 @@
  */
 #include "adc.h"
 #include "fsl_adc16.h"
+#include "circular_buffer.h"
+#include "dma.h"
+
+extern CircularBuffer_t * ADC_Buf;
+extern CircularBuffer_t * DSP_Buf;
+static CircBufferReturn_t ret;
 
 void adcInit(void)
 {
@@ -45,5 +51,11 @@ void ADC0_IRQHandler(void)
 	{
 		//get data
 		val = ADC0->R[0] & 0xFFF;
+		ret = CircBufAdd(ADC_Buf, val);
+		if(ret == BUF_FULL)
+		{
+			//trigger dma transfer
+			dmaBeginTransfer();
+		}
 	}
 }

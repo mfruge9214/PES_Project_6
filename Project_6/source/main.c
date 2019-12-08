@@ -40,10 +40,13 @@
 #include "MKL25Z4.h"
 #include "fsl_debug_console.h"
 #include "dac.h"
+#include "adc.h"
+#include "dma.h"
 #include "logger.h"
 #include "gpio.h"
 #include "Systick.h"
 #include "myTimer.h"
+#include "circular_buffer.h"
 
 
 /* F R E E   R T O S   I N C L U D E S */
@@ -56,6 +59,10 @@
 
 /* Task priorities. */
 #define genwave_PRIORITY (configMAX_PRIORITIES - 1)
+#define CIRCBUF_SIZE	64U
+
+CircularBuffer_t * ADC_Buf;
+CircularBuffer_t * DSP_Buf;
 
 static void hello_task(void *pvParameters);
 
@@ -74,6 +81,7 @@ int main(void) {
     /* Initialize application modules */
     logInit(LL_Debug);
     gpioInit();
+    dmaInit();
     adcInit();
 //    SystickInit();
 
@@ -82,6 +90,12 @@ int main(void) {
 
     /* Timer will not start until scheduler is started */
     myTimerStart();
+
+    ADC_Buf = CircBufCreate();
+    CircBufInit(ADC_Buf, CIRCBUF_SIZE);
+
+    DSP_Buf = CircBufCreate();
+    CircBufInit(DSP_Buf, CIRCBUF_SIZE);
 
     adcBeginConversion();
 
