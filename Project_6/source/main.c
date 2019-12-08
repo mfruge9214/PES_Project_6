@@ -53,34 +53,34 @@
 #include "timers.h"
 
 
-static bool lightOn;
+//static bool lightOn;
 
 /* D E F I N I T I O N S */
 
 /* Task priorities. */
 #define genwave_PRIORITY (configMAX_PRIORITIES - 1)
 
-static void hello_task(void *pvParameters);
-
-/*
- * @brief   Application entry point.
- */
-
-void myTimerCallback( TimerHandle_t timer)
-{
-	DacIncrementAndSet();
-	if(!lightOn)
-	{
-		gpioGreenLEDOn();
-		lightOn = true;
-	}
-	else
-	{
-		gpioLEDsOff();
-		lightOn = false;
-	}
-
-}
+//static void hello_task(void *pvParameters);
+//
+///*
+// * @brief   Application entry point.
+// */
+//
+//void myTimerCallback( TimerHandle_t timer)
+//{
+//	DacIncrementAndSet();
+//	if(!lightOn)
+//	{
+//		gpioGreenLEDOn();
+//		lightOn = true;
+//	}
+//	else
+//	{
+//		gpioLEDsOff();
+//		lightOn = false;
+//	}
+//
+//}
 
 
 int main(void) {
@@ -95,25 +95,24 @@ int main(void) {
     /* Initialize application modules */
     logInit(LL_Debug);
     gpioInit();
-    DacInit();
-
-    /* Create timer module */
-    lightOn = false;
-    TickType_t timerPeriod = pdMS_TO_TICKS(100);
-    TimerHandle_t p1Timer =  xTimerCreate(".1s timer",
-    							timerPeriod,
-    							pdTRUE,
-    							(void *) 2,
-    							myTimerCallback);
-
-    xTimerStart(p1Timer, 0);		// Start timer, wait 0 ticks
-
+//    DacInit();
+//
+//    /* Create timer module */
+//    lightOn = false;
+//    TickType_t timerPeriod = pdMS_TO_TICKS(100);
+//    TimerHandle_t p1Timer =  xTimerCreate(".1s timer",
+//    							timerPeriod,
+//    							pdTRUE,
+//    							(void *) 2,
+//    							myTimerCallback);
+//
+//    xTimerStart(p1Timer, 0);		// Start timer, wait 0 ticks
+//
 
     /* Create Tasks */
 
-    BaseType_t timer_task_handle;
 //    timer_task_handle = xTaskCreate(prv_TimerTask, "Timer Task", configTIMER_TASK_STACK_DEPTH, NULL, configTIMER_TASK_PRIORITY, NULL);
-//    xTaskCreate(prv_GenerateSineWave, "Generate_Sine_Wave", configMINIMAL_STACK_SIZE + 10, NULL, genwave_PRIORITY, NULL);
+    xTaskCreate(prv_GenerateSineWave, "Generate_Sine_Wave", configTIMER_TASK_STACK_DEPTH, NULL, genwave_PRIORITY, NULL);
 //    xTaskCreate(hello_task, "Hello_task", configMINIMAL_STACK_SIZE + 10, NULL, hello_task_PRIORITY, NULL);
     vTaskStartScheduler();
     while(1);
