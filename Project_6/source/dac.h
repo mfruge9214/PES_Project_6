@@ -21,7 +21,6 @@ typedef enum{
 /* Function Prototypes */
 
 void DacSetLT(void);
-void prv_GenerateSineWave(void *pvParameters);
 dac_ret_t DacInit(void);
 dac_ret_t DacSetVoltage(uint16_t regVal);
 dac_ret_t DacIncrementAndSet(void);

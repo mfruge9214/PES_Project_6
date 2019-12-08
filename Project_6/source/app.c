@@ -26,7 +26,7 @@
 
 /* A P P L I C A T I O N     M O D U L E S  */
 
-TimerHandle_t * p1Timer;
+//TimerHandle_t * p1Timer;
 
 
 /* E R R O R    V A R I A B L E */
@@ -35,9 +35,15 @@ uint8_t error;
 
 /* T A S K S */
 
-void prv_GenerateSineWave(void *prvParameters)
-{
-	error = (uint8_t) DacInit();
-	myTimerCreate(p1Timer);
-	myTimerStart(p1Timer);
-}
+//void prv_GenerateSineWave(void *prvParameters)
+//{
+////	error = (uint8_t) DacInit();
+//	myTimerCreate(p1Timer);
+//	myTimerStart(p1Timer);
+//}
+//
+//void prv_TimerTask(void *prvParameters)
+//{
+//	myTimerCreate(p1Timer);
+//	myTimerStart(p1Timer);
+//}
