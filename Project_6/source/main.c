@@ -39,7 +39,12 @@
 #include "clock_config.h"
 #include "MKL25Z4.h"
 #include "fsl_debug_console.h"
-
+#include "dac.h"
+#include "logger.h"
+#include "gpio.h"
+#include "Systick.h"
+#include "myTimer.h"
+#include "app.h"
 
 /* F R E E   R T O S   I N C L U D E S */
 #include "FreeRTOS.h"
@@ -47,16 +52,37 @@
 #include "queue.h"
 #include "timers.h"
 
+
+//static bool lightOn;
+
 /* D E F I N I T I O N S */
 
 /* Task priorities. */
-#define hello_task_PRIORITY (configMAX_PRIORITIES - 1)
+#define genwave_PRIORITY (configMAX_PRIORITIES - 1)
 
-static void hello_task(void *pvParameters);
+//static void hello_task(void *pvParameters);
+//
+///*
+// * @brief   Application entry point.
+// */
+//
+//void myTimerCallback( TimerHandle_t timer)
+//{
+//	DacIncrementAndSet();
+//	if(!lightOn)
+//	{
+//		gpioGreenLEDOn();
+//		lightOn = true;
+//	}
+//	else
+//	{
+//		gpioLEDsOff();
+//		lightOn = false;
+//	}
+//
+//}
 
-/*
- * @brief   Application entry point.
- */
+
 int main(void) {
 
   	/* Init board hardware. */
@@ -66,10 +92,30 @@ int main(void) {
   	/* Init FSL debug console. */
     BOARD_InitDebugConsole();
 
-    xTaskCreate(hello_task, "Hello_task", configMINIMAL_STACK_SIZE + 10, NULL, hello_task_PRIORITY, NULL);
+    /* Initialize application modules */
+    logInit(LL_Debug);
+    gpioInit();
+//    DacInit();
+//
+//    /* Create timer module */
+//    lightOn = false;
+//    TickType_t timerPeriod = pdMS_TO_TICKS(100);
+//    TimerHandle_t p1Timer =  xTimerCreate(".1s timer",
+//    							timerPeriod,
+//    							pdTRUE,
+//    							(void *) 2,
+//    							myTimerCallback);
+//
+//    xTimerStart(p1Timer, 0);		// Start timer, wait 0 ticks
+//
+
+    /* Create Tasks */
+
+//    timer_task_handle = xTaskCreate(prv_TimerTask, "Timer Task", configTIMER_TASK_STACK_DEPTH, NULL, configTIMER_TASK_PRIORITY, NULL);
+    xTaskCreate(prv_GenerateSineWave, "Generate_Sine_Wave", configTIMER_TASK_STACK_DEPTH, NULL, genwave_PRIORITY, NULL);
+//    xTaskCreate(hello_task, "Hello_task", configMINIMAL_STACK_SIZE + 10, NULL, hello_task_PRIORITY, NULL);
     vTaskStartScheduler();
-    for (;;)
-        ;
+    while(1);
 }
 
 
