@@ -74,6 +74,7 @@ int main(void) {
     /* Initialize application modules */
     logInit(LL_Debug);
     gpioInit();
+    adcInit();
 //    SystickInit();
 
     /* Create Timers */
@@ -81,6 +82,8 @@ int main(void) {
 
     /* Timer will not start until scheduler is started */
     myTimerStart();
+
+    adcBeginConversion();
 
     /* Create Tasks */
 //    xTaskCreate(prv_GenerateSineWave, "Generate_Sine_Wave", configMINIMAL_STACK_SIZE + 10, NULL, genwave_PRIORITY, NULL);
