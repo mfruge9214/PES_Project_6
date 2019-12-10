@@ -35,29 +35,20 @@ typedef enum
 /*** Function Name Header Info ***/
 typedef enum
 {
-	FN_main					,
-	FN_redLEDOn             ,
-	FN_blueLEDOn			,
-	FN_greenLEDOn			,
-	FN_uartBlockApp			,
-	FN_stateMachineB		,
-	FN_tempReading        	,
-	FN_avgWait				,
-	FN_tempAlert			,
-	FN_disconnect			,
-	FN_calculateAverage		,
-	FN_initSMParameters		,
-	FN_i2cWriteBytes		,
-	FN_i2cReadBytes			,
-	FN_TMP102Init			,
-	FN_TMP102POST			,
-	FN_TMP102TempRead		,
-	FN_CircBufInit			,
-	FN_CircBufRealloc		,
-	FN_CircBufAdd			,
-	FN_CircBufRemove		,
-	FN_uartInit				,
-	FN_DacSetLT
+	FN_main						,
+	FN_prv_InitModules         	,
+	FN_prv_GenerateDACSineWave 	,
+	FN_prv_ReadADC				,
+	FN_prv_ProcessData			,
+	FN_DacIncrementAndSet		,
+	FN_DacSetLT        			,
+	FN_redLEDOn					,
+	FN_blueLEDOn				,
+	FN_greenLEDOn				,
+	FN_CircBufInit				,
+	FN_CircBufRealloc			,
+	FN_CircBufAdd				,
+	FN_CircBufRemove
 } FunctionName;
 
 /***********************************************

@@ -19,28 +19,20 @@ static const char * LoggerLevelStrings[NUM_LEVELS] = {
 };
 
 static const char * FunctionNameStrings[NUM_FUNCTIONS] = {
-		"main: 				",
+		"main:			"	,
+		"prv_InitModules:"         ,
+		"prv_GenerateDACSineWave: " ,
+		"prv_ReadADC:",
+		"prv_ProcessData: "			,
+		"DacIncrementAndSet: "		,
+		"DacSetLT: ",
 		"RedLEDOn: 			",
 		"BlueLEDOn: 		",
 		"GreenLEDOn: 		",
-		"uartBlockApp: 		",
-		"StateMachineB: 	",
-		"TempReading: 		",
-		"AverageWait: 		",
-		"TempAlert: 		",
-		"Disconnect: 		",
-		"CalculateAverage: 	",
-		"InitSMParameters: 	",
-		"I2CWriteBytes: 	",
-		"I2CReadBytes: 		",
-		"TMP102Init: 		",
-		"TMP102POST: 		",
-		"TMP102TempRead: 	",
 		"CircBufInit		",
 		"CircBufRealloc		",
 		"CircBufAdd			",
-		"CircBufRemove		",
-		"UartInit			"
+		"CircBufRemove		"
 };
 
 void logInit(LoggerLevel lvl)
