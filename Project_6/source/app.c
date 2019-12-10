@@ -92,11 +92,20 @@ void prv_InitModules(void *prvParameters)
 void prv_GenerateDACSineWave(void *prvParameters)
 {
 	bool lightOn = 0;
-//	error = (uint8_t) DacInit();
 	while(1)
 	{
 		vTaskDelay(delayTime);
+<<<<<<< Updated upstream
 		DacIncrementAndSet();
+=======
+		error = (uint8_t) DacIncrementAndSet();
+
+		if(error)
+		{
+			xTaskNotifyGive(errorHandlerHandle);
+		}
+
+>>>>>>> Stashed changes
 		if(!lightOn)
 		{
 			if(xSemaphoreTake(ledSemaphore, (TickType_t) 10) == pdTRUE)  // == pdTrue)
@@ -216,6 +225,24 @@ void prv_ProcessData(void * prvParameters)
 	}
 }
 
+<<<<<<< Updated upstream
+=======
+
+void prv_ErrorHandler(void * prvParameters)
+{
+	while(1)
+	{
+		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+		if(xSemaphoreTake(ledSemaphore, (TickType_t) 100))
+		{
+			gpioRedLEDOn();
+			/* TODO Add logger and throw error */
+			while(1);
+		}
+	}
+}
+
+>>>>>>> Stashed changes
 //void prv_TimerTask(void *prvParameters)
 //{
 //	myTimerCreate(p1Timer);
