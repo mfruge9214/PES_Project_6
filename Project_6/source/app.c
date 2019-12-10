@@ -203,11 +203,13 @@ void prv_ProcessData(void * prvParameters)
 	static uint32_t reg_avg;
 	static uint32_t reg_val;
 
-	static float avg = 0;
-	static float min = 0;
-	static float max = 0;
-	static float sum = 0;
-	static float std_dev = 0;
+	static float std_dev_sum = 0;
+	static float temp = 0;
+	static float Vavg = 0;
+	static float Vmin = 0;
+	static float Vmax = 0;
+	static float Vsum = 0;
+	static float Vstd_dev = 0;
 
 	int xferCnt = 0;
 	int i;
@@ -221,7 +223,7 @@ void prv_ProcessData(void * prvParameters)
 			dmaStopTime = xTaskGetTickCount();
 
 			/* Reset variables that are not otherwise initialized */
-			sum = 0;
+			Vsum = 0;
 			reg_sum = 0;
 
 
@@ -230,7 +232,12 @@ void prv_ProcessData(void * prvParameters)
 			// Set max and min values to the first values in the buffer
 			for(i=0; i<NUM_SAMPLES; i++)
 			{
+				if (i == 39)
+				{
+					int j;
+				}
 				reg_val = DSP_Buf->buffer_start[i];
+//				DSP_Buf->head++;
 				reg_sum += reg_val;
 
 
@@ -245,15 +252,32 @@ void prv_ProcessData(void * prvParameters)
 				}
 			}
 
-			reg_avg = (reg_sum / NUM_SAMPLES);
+			/* Average Calculations */
+			reg_avg =( reg_sum / NUM_SAMPLES);
+			Vsum = (float) (reg_sum);
+			temp = (float) (Vsum / NUM_SAMPLES);
+			Vavg = (temp/ (float) 4096) * (float) (3.30);
 
-			/* TODO	Finish calculating values */
+			/* Max Calculations */
+			temp = (float) reg_max;
+			Vmax = (temp/ (float) 4096) * (float) (3.30);
+
+			/* Min Calculations */
+			temp = (float) (reg_min);
+			Vmin = (temp/ (float) 4096) * (float) (3.30);
+
+			/* Standard Deviation Calculations */
 
 			/* Code found at http://ecomputernotes.com/what-is-c/array/mean-and-standard-deviation */
-			/* Calculate standard deviation */
-//			sum += (reg_val - mean) * (reg_val - mean);
-//			std_dev = sqrt(sum / NUM_SAMPLES);
+			std_dev_sum = 0;
+			for(i = 0; i< NUM_SAMPLES; i++)
+			{
+				reg_val = DSP_Buf->buffer_start[i];
+				temp = (float) (((float) reg_val)/(float) 4096) * ((float) 3.30);
+				std_dev_sum += (temp - Vavg) * (temp - Vavg);
+			}
 
+			Vstd_dev = sqrt(std_dev_sum/NUM_SAMPLES);
 
 		/* TODO After calculating values, report the run number and the time it took DMA to xfer */
 

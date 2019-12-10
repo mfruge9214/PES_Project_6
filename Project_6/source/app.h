@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 
-#define NUM_SAMPLES		64UL
+#define NUM_SAMPLES		64.0
 
 /* T A S K S */
 void prv_InitModules(void *prvParameters);

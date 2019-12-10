@@ -43,7 +43,6 @@
 #include "logger.h"
 #include "gpio.h"
 #include "Systick.h"
-#include "myTimer.h"
 #include "app.h"
 #include "circular_buffer.h"
 #include "adc.h"
