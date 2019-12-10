@@ -15,6 +15,10 @@ extern uint8_t error;
 
 static CircBufferReturn_t ret;
 
+
+/*
+ * @brief	Initializes ADC0 for use
+ */
 void adcInit(void)
 {
 	adc16_config_t adc_config;
@@ -35,6 +39,9 @@ void adcInit(void)
 	NVIC_EnableIRQ(ADC0_IRQn);
 }
 
+/*
+ * @brief	Begins ADC conversion
+ */
 void adcBeginConversion(void)
 {
 	ADC0->SC1[CHANNEL_GROUP_0] = BEGIN_CONVERSION;
@@ -59,8 +66,6 @@ void ADC0_IRQHandler(void)
 		if(ret == BUF_FULL)
 		{
 			adcBufFull = 1;
-			//trigger dma transfer
-//			dmaBeginTransfer();
 			NVIC_DisableIRQ(ADC0_IRQn);
 		}
 	}

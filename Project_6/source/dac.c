@@ -23,11 +23,10 @@ static uint8_t dac_LT_idx;
  * 			loaded into the DACDAT register at each .1s increment
  *
  * 			Called in DACInit
+ *
+ * @note 	Voltage determined by V=sin(2pit /5) + 2
  */
 
-/*
- * Voltage determined by V=sin(2pit /5) + 2
- */
 void DacSetLT(void){
 	int i;
 	double mult = 0;
@@ -55,6 +54,8 @@ void DacSetLT(void){
 
 /*
  * @brief Initializes the DAC module for use
+ *
+ * @returns dac_ret_t
  */
 dac_ret_t DacInit(void)
 {
@@ -132,6 +133,9 @@ dac_ret_t DacSetVoltage(uint16_t regVal)
 	return DAC_SUCCESS;
 }
 
+/*
+ * @brief	Increments the DAC LT index and sets the voltage of the ADC equal to the value of that index
+ */
 dac_ret_t DacIncrementAndSet()
 {
 	// Chect to ensure index is within bounds

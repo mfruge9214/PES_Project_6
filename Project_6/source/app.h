@@ -2,7 +2,8 @@
 #include "task.h"
 #include <stdbool.h>
 
-#define NUM_SAMPLES		64U
+
+#define NUM_SAMPLES		64UL
 
 /* T A S K S */
 void prv_InitModules(void *prvParameters);

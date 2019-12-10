@@ -13,6 +13,9 @@
 extern CircularBuffer_t * ADC_Buf;
 extern CircularBuffer_t * DSP_Buf;
 
+/*
+ * @brief	Initializes DMA module and channel 0 for use in application
+ */
 void dmaInit(void)
 {
 	DMA_Init(DMA0);
@@ -37,6 +40,9 @@ void dmaInit(void)
 	NVIC_EnableIRQ(DMA0_IRQn);
 }
 
+/*
+ * @brief	Starts DMA transfer
+ */
 void dmaBeginTransfer()
 {
 	DMA0->DMA[DMA_CHANNEL_0].DCR |= DMA_DCR_START(1);
