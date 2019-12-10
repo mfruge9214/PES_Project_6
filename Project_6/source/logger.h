@@ -111,5 +111,5 @@ void logInteger(LoggerLevel lvl, FunctionName fn, uint32_t value);
  *
  * @param[in] value		Value to be logged
  ***********************************************/
-void logDACVal(LoggerLevel lvl, FunctionName fn, uint16_t value);
+void logFloat(LoggerLevel lvl, FunctionName fn, float value);
 

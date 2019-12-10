@@ -170,7 +170,7 @@ void logInteger(LoggerLevel lvl, FunctionName fn, uint32_t value)
 }
 
 
-void logDACVal(LoggerLevel lvl, FunctionName fn, uint16_t value)
+void logFloat(LoggerLevel lvl, FunctionName fn, float value)
 {
 //	char timeStamp[TIMESTAMP_LEN];
 //	GetSysTickTime(timeStamp);
@@ -188,7 +188,7 @@ void logDACVal(LoggerLevel lvl, FunctionName fn, uint16_t value)
 //			printf(timeStamp);
 			printf(LoggerLevelStrings[lvl]);
 			printf(FunctionNameStrings[fn]);
-			printf("Temperature(C): %.3f\n\r", value);
+			printf("%.3f\n\r", value);
 		}
 		break;
 
@@ -198,7 +198,7 @@ void logDACVal(LoggerLevel lvl, FunctionName fn, uint16_t value)
 //			printf(timeStamp);
 			printf(LoggerLevelStrings[lvl]);
 			printf(FunctionNameStrings[fn]);
-			printf("Temperature(C): %.3f\n\r", value);
+			printf("%.3f\n\r", value);
 		}
 		break;
 
@@ -206,7 +206,7 @@ void logDACVal(LoggerLevel lvl, FunctionName fn, uint16_t value)
 //		printf(timeStamp);
 		printf(LoggerLevelStrings[lvl]);
 		printf(FunctionNameStrings[fn]);
-		printf("Temperature(C): %.3f\n\r", value);
+		printf("%.3f\n\r", value);
 		break;
 
 	default:

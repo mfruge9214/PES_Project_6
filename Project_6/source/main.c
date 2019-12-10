@@ -91,7 +91,7 @@ int main(void) {
     xTaskCreate(prv_InitModules, "Application Module Init", (configMINIMAL_STACK_SIZE * 2), NULL, initModules_PRIORITY, &initHandle);
     xTaskCreate(prv_GenerateDACSineWave, "Generate_Sine_Wave", configMINIMAL_STACK_SIZE + 10, NULL, genwave_PRIORITY, &genWaveHandle);
     xTaskCreate(prv_ReadADC, "Read ADC", (configMINIMAL_STACK_SIZE * 2), NULL, readADC_PRIORITY, &ADCHandle);
-    xTaskCreate(prv_ProcessData, "Process ADC Data", configMINIMAL_STACK_SIZE + 10, NULL, processdata_PRIORITY, &processDataHandle);
+    xTaskCreate(prv_ProcessData, "Process ADC Data", (configMINIMAL_STACK_SIZE * 4), NULL, processdata_PRIORITY, &processDataHandle);
     xTaskCreate(prv_ErrorHandler, "Error Handling", configMINIMAL_STACK_SIZE, NULL, errorHandler_PRIORITY, &errorHandlerHandle);
     vTaskStartScheduler();
     while(1);

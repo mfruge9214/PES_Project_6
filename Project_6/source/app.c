@@ -221,10 +221,15 @@ void prv_ProcessData(void * prvParameters)
 	{
 		if(dmaDone)
 		{
+		    logString(LL_Normal, FN_prv_ProcessData, "DMA Complete");
+
 			xferCnt++;
 			NVIC_EnableIRQ(ADC0_IRQn);
 			dmaDone = 0;
 			dmaStopTime = xTaskGetTickCount();
+
+//			uint32_t t = (uint32_t)(dmaStopTime - dmaStartTime);
+//			logInteger(LL_Normal, FN_prv_ProcessData, t);
 
 			/* Reset variables that are not otherwise initialized */
 			Vsum = 0;
@@ -270,6 +275,9 @@ void prv_ProcessData(void * prvParameters)
 			temp = (float) (reg_min);
 			Vmin = (temp/ (float) 4096) * (float) (3.30);
 
+//			logFloat(LL_Normal, FN_prv_ProcessData, Vmin);
+
+
 			/* Standard Deviation Calculations */
 
 			/* Code found at http://ecomputernotes.com/what-is-c/array/mean-and-standard-deviation */
@@ -288,6 +296,8 @@ void prv_ProcessData(void * prvParameters)
 		}
 		if( xferCnt == 5)
 		{
+		    logString(LL_Normal, FN_prv_ProcessData, "5 Cycles Complete - Program End");
+
 			error = CircBufDestroy(ADC_Buf);
 			error = CircBufDestroy(DSP_Buf);
 			if(error)
