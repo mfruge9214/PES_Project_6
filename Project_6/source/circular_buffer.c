@@ -40,9 +40,12 @@ CircularBuffer_t* CircBufCreate(void)
  *************************/
 CircBufferReturn_t CircBufInit(CircularBuffer_t * buf, uint8_t size)
 {
+#ifdef HALF_WORDS
 	/* Allocate requested memory */
 	buf->buffer_start = (uint16_t*) malloc(sizeof(uint16_t) * size);
-
+#else
+	buf->buffer_start = (uint32_t*) malloc(sizeof(uint32_t) * size);
+#endif
 	/* Make sure memory is valid */
 	if(!buf->buffer_start)
 	{
@@ -59,6 +62,17 @@ CircBufferReturn_t CircBufInit(CircularBuffer_t * buf, uint8_t size)
 	return BUF_SUCCESS;
 }
 
+
+CircBufferReturn_t CircBufReset(CircularBuffer_t * buf)
+{
+	buf->head = buf->buffer_start;
+	buf->tail = buf->buffer_start;
+	buf->capacity = buf->capacity;
+	buf->length = 0;
+	buf->numReallocs = 0;
+
+	return BUF_SUCCESS;
+}
 
 
 /************************
@@ -86,8 +100,12 @@ CircBufferReturn_t CircBufRealloc(CircularBuffer_t * buf)
 	logString(LL_Debug, FN_CircBufRealloc, "Reallocating Buffer\0");
 
 	CircularBuffer_t * temp = CircBufCreate();
+#ifdef HALF_WORDS
 	temp->buffer_start = (uint16_t *) realloc(buf->buffer_start, buf->capacity * BUFSIZE_MULT);
 
+#else //FULL_WORDS
+	temp->buffer_start = (uint32_t *) realloc(buf->buffer_start, buf->capacity * BUFSIZE_MULT);
+#endif
 	temp->capacity = buf->capacity * BUFSIZE_MULT;
 	temp->head = temp->buffer_start;
 	temp->tail = temp->buffer_start;
@@ -100,11 +118,16 @@ CircBufferReturn_t CircBufRealloc(CircularBuffer_t * buf)
 	/* Adjust values to reflect change */
 
 	/* Create holding values */
-	uint16_t * old_bufend;
+
 	uint16_t cTransfer;
 
+#ifdef HALF_WORDS
+	uint16_t * old_bufend;
 	old_bufend = (uint16_t *) buf->buffer_start + (sizeof(uint16_t) * buf->capacity);
-
+#else
+	uint32_t * old_bufend;
+	old_bufend = (uint32_t *) buf->buffer_start + (sizeof(uint32_t) * buf->capacity);
+#endif
 	/* Set new values */
 
 	/* Loop to move characters while keeping them in order */
@@ -175,9 +198,14 @@ CircBufferReturn_t	CircBufAdd(CircularBuffer_t * buf, uint16_t c)
 
 
 //	uint16_t offset = (sizeof(uint16_t) * buf->capacity);
+
+#ifdef HALF_WORDS
 	uint16_t offset = (buf->capacity);
 	uint16_t * bufend = (uint16_t *) (buf->buffer_start + offset);
-
+#else	// FULL_WORDS
+	uint32_t offset = (buf->capacity);
+	uint32_t * bufend = (uint32_t *) (buf->buffer_start + offset);
+#endif
 	/* Check if it needs to be wrapped to the beginning */
 	if(buf->head == bufend)
 	{
@@ -219,8 +247,11 @@ CircBufferReturn_t	CircBufRemove(CircularBuffer_t * buf, uint16_t * charOut)
 	(buf->tail)++;
 	(buf->length)--;
 
+#ifdef HALF_WORDS
 	uint16_t * bufend = (uint16_t *) buf->buffer_start + (sizeof(uint16_t) * buf->capacity);
-
+#else
+	uint32_t * bufend = (uint32_t *) buf->buffer_start + (sizeof(uint32_t) * buf->capacity);
+#endif
 	/* Check if it needs to be wrapped to the beginning */
 	if(buf->tail == bufend)
 	{

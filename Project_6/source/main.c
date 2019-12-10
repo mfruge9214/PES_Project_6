@@ -45,6 +45,9 @@
 #include "Systick.h"
 #include "myTimer.h"
 #include "app.h"
+#include "circular_buffer.h"
+#include "adc.h"
+#include "dma.h"
 
 /* F R E E   R T O S   I N C L U D E S */
 #include "FreeRTOS.h"
@@ -58,31 +61,22 @@
 /* D E F I N I T I O N S */
 
 /* Task priorities. */
-#define genwave_PRIORITY (configMAX_PRIORITIES - 1)
+#define initModules_PRIORITY 		(configMAX_PRIORITIES - 1)
+#define readADC_PRIORITY 			(initModules_PRIORITY - 1)
+#define genwave_PRIORITY			(initModules_PRIORITY - 1)
+#define processdata_PRIORITY		(initModules_PRIORITY - 1)
 
-//static void hello_task(void *pvParameters);
-//
-///*
-// * @brief   Application entry point.
-// */
-//
-//void myTimerCallback( TimerHandle_t timer)
-//{
-//	DacIncrementAndSet();
-//	if(!lightOn)
-//	{
-//		gpioGreenLEDOn();
-//		lightOn = true;
-//	}
-//	else
-//	{
-//		gpioLEDsOff();
-//		lightOn = false;
-//	}
-//
-//}
+/******************** G L O B A L S *****************/
 
+//extern uint8_t dmaDone;
+//extern uint8_t adcBufFull;
+//
+//extern CircularBuffer_t * ADC_Buf;
+//extern CircularBuffer_t * DSP_Buf;
 
+extern TaskHandle_t initHandle, genWaveHandle, ADCHandle, processDataHandle;
+
+/* MAIN */
 int main(void) {
 
   	/* Init board hardware. */
@@ -92,28 +86,27 @@ int main(void) {
   	/* Init FSL debug console. */
     BOARD_InitDebugConsole();
 
-    /* Initialize application modules */
-    logInit(LL_Debug);
-    gpioInit();
+//    // Create buffers
+//	ADC_Buf = CircBufCreate();
+//	DSP_Buf = CircBufCreate();
+//	CircBufInit(ADC_Buf, NUM_SAMPLES);
+//	CircBufInit(DSP_Buf, NUM_SAMPLES);
+//
+//	/* Initialize Peripherals */
+//    logInit(LL_Debug);
+//    gpioInit();
 //    DacInit();
-//
-//    /* Create timer module */
-//    lightOn = false;
-//    TickType_t timerPeriod = pdMS_TO_TICKS(100);
-//    TimerHandle_t p1Timer =  xTimerCreate(".1s timer",
-//    							timerPeriod,
-//    							pdTRUE,
-//    							(void *) 2,
-//    							myTimerCallback);
-//
-//    xTimerStart(p1Timer, 0);		// Start timer, wait 0 ticks
-//
+//    adcInit();
+//    dmaInit();
 
     /* Create Tasks */
 
+
 //    timer_task_handle = xTaskCreate(prv_TimerTask, "Timer Task", configTIMER_TASK_STACK_DEPTH, NULL, configTIMER_TASK_PRIORITY, NULL);
-    xTaskCreate(prv_GenerateSineWave, "Generate_Sine_Wave", configTIMER_TASK_STACK_DEPTH, NULL, genwave_PRIORITY, NULL);
-//    xTaskCreate(hello_task, "Hello_task", configMINIMAL_STACK_SIZE + 10, NULL, hello_task_PRIORITY, NULL);
+    xTaskCreate(prv_InitModules, "Application Module Init", (configMINIMAL_STACK_SIZE * 2), NULL, initModules_PRIORITY, &initHandle);
+    xTaskCreate(prv_GenerateDACSineWave, "Generate_Sine_Wave", configMINIMAL_STACK_SIZE + 10, NULL, genwave_PRIORITY, &genWaveHandle);
+    xTaskCreate(prv_ReadADC, "Read ADC", (configMINIMAL_STACK_SIZE * 2), NULL, readADC_PRIORITY, &ADCHandle);
+    xTaskCreate(prv_ProcessData, "Process ADC Data", configMINIMAL_STACK_SIZE + 10, NULL, processdata_PRIORITY, &processDataHandle);
     vTaskStartScheduler();
     while(1);
 }

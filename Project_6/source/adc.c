@@ -54,8 +54,10 @@ void ADC0_IRQHandler(void)
 		ret = CircBufAdd(ADC_Buf, val);
 		if(ret == BUF_FULL)
 		{
+			adcBufFull = 1;
 			//trigger dma transfer
-			dmaBeginTransfer();
+//			dmaBeginTransfer();
+			NVIC_DisableIRQ(ADC0_IRQn);
 		}
 	}
 }
