@@ -221,15 +221,15 @@ void prv_ProcessData(void * prvParameters)
 	{
 		if(dmaDone)
 		{
-		    logString(LL_Normal, FN_prv_ProcessData, "DMA Complete");
+		    logString(LL_Normal, FN_prv_ProcessData, "DMA Complete - Time (ms):");
 
 			xferCnt++;
 			NVIC_EnableIRQ(ADC0_IRQn);
 			dmaDone = 0;
 			dmaStopTime = xTaskGetTickCount();
 
-//			uint32_t t = (uint32_t)(dmaStopTime - dmaStartTime);
-//			logInteger(LL_Normal, FN_prv_ProcessData, t);
+			uint32_t t = (uint32_t)(dmaStopTime - dmaStartTime);
+			logInteger(LL_Normal, FN_prv_ProcessData, t);
 
 			/* Reset variables that are not otherwise initialized */
 			Vsum = 0;
@@ -275,8 +275,10 @@ void prv_ProcessData(void * prvParameters)
 			temp = (float) (reg_min);
 			Vmin = (temp/ (float) 4096) * (float) (3.30);
 
-//			logFloat(LL_Normal, FN_prv_ProcessData, Vmin);
-
+			logString(LL_Normal, FN_prv_ProcessData, "Vmin - Vmax - Vavg");
+			logFloat(LL_Normal, FN_prv_ProcessData, Vmin);
+			logFloat(LL_Normal, FN_prv_ProcessData, Vmax);
+			logFloat(LL_Normal, FN_prv_ProcessData, Vavg);
 
 			/* Standard Deviation Calculations */
 
@@ -290,6 +292,9 @@ void prv_ProcessData(void * prvParameters)
 			}
 
 			Vstd_dev = sqrt(std_dev_sum/NUM_SAMPLES);
+
+			logString(LL_Normal, FN_prv_ProcessData, "Standard Deviation");
+			logFloat(LL_Normal, FN_prv_ProcessData, Vstd_dev);
 
 		/* TODO After calculating values, report the run number and the time it took DMA to xfer */
 
