@@ -92,11 +92,14 @@ void prv_InitModules(void *prvParameters)
 	error = (uint8_t) CircBufInit(DSP_Buf, NUM_SAMPLES);
 
 	/* Initialize Peripherals */
-    logInit(LL_Debug);
+    logInit(LL_Normal);
+    logEnable();
     gpioInit();
     error = (uint8_t) DacInit();
     adcInit();
     dmaInit();
+
+    logString(LL_Normal, FN_prv_InitModules, "Initialization Complete");
 
     if(error)
     {
@@ -172,6 +175,7 @@ void prv_ReadADC(void * prvParameters)
 		adcBeginConversion();
 		if(adcBufFull)
 		{
+		    logString(LL_Normal, FN_prv_ReadADC, "ADC Buf Full - Begin DMA");
 			adcBufFull = 0;
 			if(xSemaphoreTake(ledSemaphore, (TickType_t) 10) == pdTRUE) //== pdTrue)
 			{
