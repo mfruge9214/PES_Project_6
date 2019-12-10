@@ -52,7 +52,7 @@ SemaphoreHandle_t ledSemaphore = NULL;
 
 /* E R R O R    V A R I A B L E */
 
-//uint8_t error;
+uint8_t error;
 
 TickType_t delayTime = pdMS_TO_TICKS(100);
 TickType_t BlueOnTime = pdMS_TO_TICKS(500);
@@ -62,7 +62,7 @@ static TickType_t dmaStartTime;
 static TickType_t dmaStopTime;
 
 /* T A S K    H A N D L E S */
-TaskHandle_t initHandle, genWaveHandle, ADCHandle, processDataHandle;
+TaskHandle_t initHandle, genWaveHandle, ADCHandle, processDataHandle, errorHandlerHandle;
 
 /* T A S K S */
 
@@ -75,16 +75,24 @@ void prv_InitModules(void *prvParameters)
     // Create buffers
 	ADC_Buf = CircBufCreate();
 	DSP_Buf = CircBufCreate();
-	CircBufInit(ADC_Buf, NUM_SAMPLES);
-	CircBufInit(DSP_Buf, NUM_SAMPLES);
+	if(ADC_Buf == NULL || DSP_Buf == NULL)
+	{
+		error |= 0x1;
+	}
+	error = (uint8_t) CircBufInit(ADC_Buf, NUM_SAMPLES);
+	error = (uint8_t) CircBufInit(DSP_Buf, NUM_SAMPLES);
 
 	/* Initialize Peripherals */
     logInit(LL_Debug);
     gpioInit();
-    DacInit();
+    error = (uint8_t) DacInit();
     adcInit();
     dmaInit();
 
+    if(error)
+    {
+    	xTaskNotifyGive(errorHandlerHandle);
+    }
 
     vTaskDelete(NULL);
 }
@@ -96,7 +104,15 @@ void prv_GenerateDACSineWave(void *prvParameters)
 	while(1)
 	{
 		vTaskDelay(delayTime);
-		DacIncrementAndSet();
+		error = (uint8_t) DacIncrementAndSet();
+
+		error = 1;
+
+		if(error)
+		{
+			xTaskNotifyGive(errorHandlerHandle);
+		}
+
 		if(!lightOn)
 		{
 			if(xSemaphoreTake(ledSemaphore, (TickType_t) 10) == pdTRUE)  // == pdTrue)
@@ -122,9 +138,9 @@ void prv_ReadADC(void * prvParameters)
 {
 	while(1)
 	{
-		if(dmaDone)
+		if(error)
 		{
-			int i;
+			xTaskNotifyGive(errorHandlerHandle);
 		}
 		vTaskDelay(delayTime);
 		adcBeginConversion();
@@ -209,10 +225,35 @@ void prv_ProcessData(void * prvParameters)
 		}
 		if( xferCnt == 5)
 		{
+			error = CircBufDestroy(ADC_Buf);
+			error = CircBufDestroy(DSP_Buf);
+			if(error)
+			{
+				xTaskNotifyGive(errorHandlerHandle);
+			}
 			vTaskDelete(genWaveHandle);		// Delete Genwave Task
 			vTaskDelete(ADCHandle);			// Delete ADC task
 		    vTaskDelete(NULL);		// Delete this task
 		}
+	}
+}
+
+
+void prv_ErrorHandler(void * prvParameters)
+{
+//	TickType_t error_delay = pdMS_TO_TICKS(1000);
+	while(1)
+	{
+		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+		if(xSemaphoreTake(ledSemaphore, (TickType_t) 100))
+		{
+			gpioRedLEDOn();
+			/* TODO Add logger and throw error */
+
+
+			while(1);
+		}
+//		vTaskDelay(error_delay);
 	}
 }
 

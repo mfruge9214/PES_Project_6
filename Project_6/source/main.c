@@ -62,9 +62,10 @@
 
 /* Task priorities. */
 #define initModules_PRIORITY 		(configMAX_PRIORITIES - 1)
-#define readADC_PRIORITY 			(initModules_PRIORITY - 1)
-#define genwave_PRIORITY			(initModules_PRIORITY - 1)
-#define processdata_PRIORITY		(initModules_PRIORITY - 1)
+#define errorHandler_PRIORITY		(initModules_PRIORITY - 1)
+#define readADC_PRIORITY 			(initModules_PRIORITY - 2)
+#define genwave_PRIORITY			(initModules_PRIORITY - 2)
+#define processdata_PRIORITY		(initModules_PRIORITY - 2)
 
 /******************** G L O B A L S *****************/
 
@@ -74,7 +75,7 @@
 //extern CircularBuffer_t * ADC_Buf;
 //extern CircularBuffer_t * DSP_Buf;
 
-extern TaskHandle_t initHandle, genWaveHandle, ADCHandle, processDataHandle;
+extern TaskHandle_t initHandle, genWaveHandle, ADCHandle, processDataHandle, errorHandlerHandle;
 
 /* MAIN */
 int main(void) {
@@ -86,40 +87,14 @@ int main(void) {
   	/* Init FSL debug console. */
     BOARD_InitDebugConsole();
 
-//    // Create buffers
-//	ADC_Buf = CircBufCreate();
-//	DSP_Buf = CircBufCreate();
-//	CircBufInit(ADC_Buf, NUM_SAMPLES);
-//	CircBufInit(DSP_Buf, NUM_SAMPLES);
-//
-//	/* Initialize Peripherals */
-//    logInit(LL_Debug);
-//    gpioInit();
-//    DacInit();
-//    adcInit();
-//    dmaInit();
-
     /* Create Tasks */
 
-
-//    timer_task_handle = xTaskCreate(prv_TimerTask, "Timer Task", configTIMER_TASK_STACK_DEPTH, NULL, configTIMER_TASK_PRIORITY, NULL);
     xTaskCreate(prv_InitModules, "Application Module Init", (configMINIMAL_STACK_SIZE * 2), NULL, initModules_PRIORITY, &initHandle);
     xTaskCreate(prv_GenerateDACSineWave, "Generate_Sine_Wave", configMINIMAL_STACK_SIZE + 10, NULL, genwave_PRIORITY, &genWaveHandle);
     xTaskCreate(prv_ReadADC, "Read ADC", (configMINIMAL_STACK_SIZE * 2), NULL, readADC_PRIORITY, &ADCHandle);
     xTaskCreate(prv_ProcessData, "Process ADC Data", configMINIMAL_STACK_SIZE + 10, NULL, processdata_PRIORITY, &processDataHandle);
+    xTaskCreate(prv_ErrorHandler, "Error Handling", configMINIMAL_STACK_SIZE, NULL, errorHandler_PRIORITY, &errorHandlerHandle);
     vTaskStartScheduler();
     while(1);
 }
 
-
-/*!
- * @brief Task responsible for printing of "Hello world." message.
- */
-static void hello_task(void *pvParameters)
-{
-    for (;;)
-    {
-        PRINTF("Hello world.\r\n");
-        vTaskSuspend(NULL);
-    }
-}
