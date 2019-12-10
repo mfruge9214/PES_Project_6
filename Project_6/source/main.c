@@ -62,9 +62,10 @@
 
 /* Task priorities. */
 #define initModules_PRIORITY 		(configMAX_PRIORITIES - 1)
-#define readADC_PRIORITY 			(initModules_PRIORITY - 1)
-#define genwave_PRIORITY			(initModules_PRIORITY - 1)
-#define processdata_PRIORITY		(initModules_PRIORITY - 1)
+#define errorHandler_PRIORITY		(initModules_PRIORITY - 1)
+#define readADC_PRIORITY 			(initModules_PRIORITY - 2)
+#define genwave_PRIORITY			(initModules_PRIORITY - 2)
+#define processdata_PRIORITY		(initModules_PRIORITY - 2)
 
 /******************** G L O B A L S *****************/
 
@@ -74,7 +75,7 @@
 //extern CircularBuffer_t * ADC_Buf;
 //extern CircularBuffer_t * DSP_Buf;
 
-extern TaskHandle_t initHandle, genWaveHandle, ADCHandle, processDataHandle;
+extern TaskHandle_t initHandle, genWaveHandle, ADCHandle, processDataHandle, errorHandlerHandle;
 
 /* MAIN */
 int main(void) {
@@ -92,6 +93,7 @@ int main(void) {
     xTaskCreate(prv_GenerateDACSineWave, "Generate_Sine_Wave", configMINIMAL_STACK_SIZE + 10, NULL, genwave_PRIORITY, &genWaveHandle);
     xTaskCreate(prv_ReadADC, "Read ADC", (configMINIMAL_STACK_SIZE * 2), NULL, readADC_PRIORITY, &ADCHandle);
     xTaskCreate(prv_ProcessData, "Process ADC Data", configMINIMAL_STACK_SIZE + 10, NULL, processdata_PRIORITY, &processDataHandle);
+    xTaskCreate(prv_ErrorHandler, "Error Handling", configMINIMAL_STACK_SIZE, NULL, errorHandler_PRIORITY, &errorHandlerHandle);
     vTaskStartScheduler();
     while(1);
 }

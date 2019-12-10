@@ -58,6 +58,7 @@ void DacSetLT(void){
  */
 dac_ret_t DacInit(void)
 {
+	dac_ret_t ret;
 	/* Set the values in the lookup table on initialization */
 	DacSetLT();
 
@@ -97,7 +98,12 @@ dac_ret_t DacInit(void)
 	 *
 	 */
 
-	DacSetVoltage(DAC_REG_VALS[dac_LT_idx]);
+	 ret = DacSetVoltage(DAC_REG_VALS[dac_LT_idx]);
+
+	 if(ret)
+	 {
+		 return DAC_FAIL;
+	 }
 
 	// Enable
 	DAC0->C0 |= (DAC_C0_DACEN_MASK);
@@ -128,14 +134,9 @@ dac_ret_t DacSetVoltage(uint16_t regVal)
 
 dac_ret_t DacIncrementAndSet()
 {
-#ifdef DMA
-	// Increment by writing to the DACSWTRG register
-#else
 	// Chect to ensure index is within bounds
 	if(dac_LT_idx < 0 || dac_LT_idx >= NUM_SIN_VALS)
 	{
-		// TODO: Adapt to error checking
-		gpioRedLEDOn();
 		return DAC_FAIL;
 	}
 
@@ -148,5 +149,4 @@ dac_ret_t DacIncrementAndSet()
 	DacSetVoltage(nextVal);
 
 	return DAC_SUCCESS;
-#endif
 }

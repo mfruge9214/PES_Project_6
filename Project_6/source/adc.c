@@ -11,6 +11,8 @@
 
 extern CircularBuffer_t * ADC_Buf;
 extern CircularBuffer_t * DSP_Buf;
+extern uint8_t error;
+
 static CircBufferReturn_t ret;
 
 void adcInit(void)
@@ -44,7 +46,9 @@ void ADC0_IRQHandler(void)
 
 	flags = ADC16_GetStatusFlags(ADC0);
 	if(flags == kADC16_CalibrationFailedFlag)
-		return; 		//not good
+	{
+		error = 0x1;
+	}
 
 	flags = ADC16_GetChannelStatusFlags(ADC0, CHANNEL_GROUP_0);
 	if(flags == kADC16_ChannelConversionDoneFlag)
