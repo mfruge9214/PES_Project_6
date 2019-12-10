@@ -15,12 +15,6 @@ extern CircularBuffer_t * DSP_Buf;
 
 void dmaInit(void)
 {
-    /* Configure DMAMUX */
-//    DMAMUX_Init(DMAMUX0);
-//    DMAMUX_SetSource(DMAMUX0, DMA_CHANNEL_0, 63);
-//    DMAMUX_EnableChannel(DMAMUX0, DMA_CHANNEL_0);
-
-
 	DMA_Init(DMA0);
 
 	dma_transfer_config_t  dma_config;
