@@ -13,22 +13,24 @@ static bool LOG_ENABLE;
 static LoggerLevel LOG_LEVEL;
 
 static const char * LoggerLevelStrings[NUM_LEVELS] = {
-		"	Test: 	",
-		"	Debug:  ",
-		"	Status: "
+		"Test: 	",
+		"Debug:  ",
+		"Status: "
 };
 
 static const char * FunctionNameStrings[NUM_FUNCTIONS] = {
-		"main:			"	,
-		"prv_InitModules:"         ,
-		"prv_GenerateDACSineWave: " ,
-		"prv_ReadADC:",
-		"prv_ProcessData: "			,
-		"DacIncrementAndSet: "		,
-		"DacSetLT: ",
+		"main:				",
+		"prv_InitModules:	",
+		"prv_GenerateDACSineWave: ",
+		"prv_ReadADC:		",
+		"prv_ProcessData: 	",
+		"prv_ErrorHandler:	",
+		"DacIncrementAndSet: ",
+		"DacSetLT: 			",
 		"RedLEDOn: 			",
 		"BlueLEDOn: 		",
 		"GreenLEDOn: 		",
+		"LEDsOff:			",
 		"CircBufInit		",
 		"CircBufRealloc		",
 		"CircBufAdd			",
@@ -74,8 +76,8 @@ bool logStatus()
 
 void logString(LoggerLevel lvl, FunctionName fn, char* message)
 {
-	char timeStamp[TIMESTAMP_LEN];
-	GetSysTickTime(timeStamp);
+//	char timeStamp[TIMESTAMP_LEN];
+//	GetSysTickTime(timeStamp);
 	if(!LOG_ENABLE)
 	{
 		return;
@@ -86,7 +88,7 @@ void logString(LoggerLevel lvl, FunctionName fn, char* message)
 	case LOGGER_LEVEL_NORMAL:
 		if(lvl == LL_Normal)
 		{
-			printf(timeStamp);
+//			printf(timeStamp);
 			printf(LoggerLevelStrings[lvl]);
 			printf(FunctionNameStrings[fn]);
 			printf(message);
@@ -97,7 +99,7 @@ void logString(LoggerLevel lvl, FunctionName fn, char* message)
 	case LOGGER_LEVEL_DEBUG:
 		if((lvl == LL_Debug) || (lvl == LL_Normal))
 		{
-			printf(timeStamp);
+//			printf(timeStamp);
 			printf(LoggerLevelStrings[lvl]);
 			printf(FunctionNameStrings[fn]);
 			printf(message);
@@ -106,7 +108,7 @@ void logString(LoggerLevel lvl, FunctionName fn, char* message)
 		break;
 
 	case LOGGER_LEVEL_TEST:
-		printf(timeStamp);
+//		printf(timeStamp);
 		printf(LoggerLevelStrings[lvl]);
 		printf(FunctionNameStrings[fn]);
 		printf(message);
@@ -114,7 +116,7 @@ void logString(LoggerLevel lvl, FunctionName fn, char* message)
 		break;
 
 	default:
-		printf(timeStamp);
+//		printf(timeStamp);
 		printf("LOG_LEVEL is undefined \n\r");
 		break;
 	}
@@ -123,8 +125,8 @@ void logString(LoggerLevel lvl, FunctionName fn, char* message)
 
 void logInteger(LoggerLevel lvl, FunctionName fn, uint32_t value)
 {
-	char timeStamp[TIMESTAMP_LEN];
-	GetSysTickTime(timeStamp);
+//	char timeStamp[TIMESTAMP_LEN];
+//	GetSysTickTime(timeStamp);
 	/* Ensure Logger Enabled */
 	if(!LOG_ENABLE)
 	{
@@ -136,7 +138,7 @@ void logInteger(LoggerLevel lvl, FunctionName fn, uint32_t value)
 	case LOGGER_LEVEL_NORMAL:
 		if(lvl == LL_Normal)
 		{
-			printf(timeStamp);
+//			printf(timeStamp);
 			printf(LoggerLevelStrings[lvl]);
 			printf(FunctionNameStrings[fn]);
 			printf("%u\n\r", value);
@@ -146,7 +148,7 @@ void logInteger(LoggerLevel lvl, FunctionName fn, uint32_t value)
 	case LOGGER_LEVEL_DEBUG:
 		if((lvl == LL_Debug) || (lvl == LL_Normal))
 		{
-			printf(timeStamp);
+//			printf(timeStamp);
 			printf(LoggerLevelStrings[lvl]);
 			printf(FunctionNameStrings[fn]);
 			printf("%u\n\r", value);
@@ -154,24 +156,24 @@ void logInteger(LoggerLevel lvl, FunctionName fn, uint32_t value)
 		break;
 
 	case LOGGER_LEVEL_TEST:
-		printf(timeStamp);
+//		printf(timeStamp);
 		printf(LoggerLevelStrings[lvl]);
 		printf(FunctionNameStrings[fn]);
 		printf("%u\n\r", value);
 		break;
 
 	default:
-		printf(timeStamp);
+//		printf(timeStamp);
 		printf("LOG_LEVEL is undefined \n\r");
 		break;
 	}
 }
 
 
-void logTemperature(LoggerLevel lvl, FunctionName fn, float value)
+void logDACVal(LoggerLevel lvl, FunctionName fn, uint16_t value)
 {
-	char timeStamp[TIMESTAMP_LEN];
-	GetSysTickTime(timeStamp);
+//	char timeStamp[TIMESTAMP_LEN];
+//	GetSysTickTime(timeStamp);
 	/* Ensure Logger Enabled */
 	if(!LOG_ENABLE)
 	{
@@ -183,7 +185,7 @@ void logTemperature(LoggerLevel lvl, FunctionName fn, float value)
 	case LOGGER_LEVEL_NORMAL:
 		if(lvl == LL_Normal)
 		{
-			printf(timeStamp);
+//			printf(timeStamp);
 			printf(LoggerLevelStrings[lvl]);
 			printf(FunctionNameStrings[fn]);
 			printf("Temperature(C): %.3f\n\r", value);
@@ -193,7 +195,7 @@ void logTemperature(LoggerLevel lvl, FunctionName fn, float value)
 	case LOGGER_LEVEL_DEBUG:
 		if((lvl == LL_Debug) || (lvl == LL_Normal))
 		{
-			printf(timeStamp);
+//			printf(timeStamp);
 			printf(LoggerLevelStrings[lvl]);
 			printf(FunctionNameStrings[fn]);
 			printf("Temperature(C): %.3f\n\r", value);
@@ -201,14 +203,14 @@ void logTemperature(LoggerLevel lvl, FunctionName fn, float value)
 		break;
 
 	case LOGGER_LEVEL_TEST:
-		printf(timeStamp);
+//		printf(timeStamp);
 		printf(LoggerLevelStrings[lvl]);
 		printf(FunctionNameStrings[fn]);
 		printf("Temperature(C): %.3f\n\r", value);
 		break;
 
 	default:
-		printf(timeStamp);
+//		printf(timeStamp);
 		printf("LOG_LEVEL is undefined \n\r");
 		break;
 	}

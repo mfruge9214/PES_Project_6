@@ -17,7 +17,7 @@
 
 #define BUF_SIZE		50
 #define NUM_LEVELS      3
-#define NUM_FUNCTIONS 	21
+#define NUM_FUNCTIONS 	16
 #define TIMESTAMP_LEN	11
 
 /*** Logger Level Header Info ***/
@@ -40,11 +40,13 @@ typedef enum
 	FN_prv_GenerateDACSineWave 	,
 	FN_prv_ReadADC				,
 	FN_prv_ProcessData			,
+	FN_prv_ErrorHandler			,
 	FN_DacIncrementAndSet		,
 	FN_DacSetLT        			,
 	FN_redLEDOn					,
 	FN_blueLEDOn				,
 	FN_greenLEDOn				,
+	FN_LEDsOff					,
 	FN_CircBufInit				,
 	FN_CircBufRealloc			,
 	FN_CircBufAdd				,
@@ -109,5 +111,5 @@ void logInteger(LoggerLevel lvl, FunctionName fn, uint32_t value);
  *
  * @param[in] value		Value to be logged
  ***********************************************/
-void logTemperature(LoggerLevel lvl, FunctionName fn, float value);
+void logDACVal(LoggerLevel lvl, FunctionName fn, uint16_t value);
 
