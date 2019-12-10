@@ -86,23 +86,8 @@ int main(void) {
   	/* Init FSL debug console. */
     BOARD_InitDebugConsole();
 
-//    // Create buffers
-//	ADC_Buf = CircBufCreate();
-//	DSP_Buf = CircBufCreate();
-//	CircBufInit(ADC_Buf, NUM_SAMPLES);
-//	CircBufInit(DSP_Buf, NUM_SAMPLES);
-//
-//	/* Initialize Peripherals */
-//    logInit(LL_Debug);
-//    gpioInit();
-//    DacInit();
-//    adcInit();
-//    dmaInit();
-
     /* Create Tasks */
 
-
-//    timer_task_handle = xTaskCreate(prv_TimerTask, "Timer Task", configTIMER_TASK_STACK_DEPTH, NULL, configTIMER_TASK_PRIORITY, NULL);
     xTaskCreate(prv_InitModules, "Application Module Init", (configMINIMAL_STACK_SIZE * 2), NULL, initModules_PRIORITY, &initHandle);
     xTaskCreate(prv_GenerateDACSineWave, "Generate_Sine_Wave", configMINIMAL_STACK_SIZE + 10, NULL, genwave_PRIORITY, &genWaveHandle);
     xTaskCreate(prv_ReadADC, "Read ADC", (configMINIMAL_STACK_SIZE * 2), NULL, readADC_PRIORITY, &ADCHandle);
@@ -111,15 +96,3 @@ int main(void) {
     while(1);
 }
 
-
-/*!
- * @brief Task responsible for printing of "Hello world." message.
- */
-static void hello_task(void *pvParameters)
-{
-    for (;;)
-    {
-        PRINTF("Hello world.\r\n");
-        vTaskSuspend(NULL);
-    }
-}
